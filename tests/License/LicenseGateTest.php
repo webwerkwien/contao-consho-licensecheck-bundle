@@ -66,7 +66,43 @@ class LicenseGateTest extends TestCase
         $this->store->setKey('acme-tool', $this->shop->key(self::LIC), self::NOW);
         self::assertSame('notConfirmed', $this->reason());
 
-        self::assertSame('unknownProduct', $this->gate()->verdict('fremd', self::NOW)->reason);
+        self::assertSame('unknownProduct', $this->reason(product: 'fremd'));
+    }
+
+    /**
+     * L19, 4.5: Jedes Produkt prüft nur mit den Schlüsseln, die es selbst
+     * nennt. Gefunden im Review (LZ-7): Mit einem Produkt je Test überlebte
+     * „alle Schlüssel aller Produkte zusammen" — dann könnte Hersteller B
+     * Bestätigungen und Schlüssel für das Produkt von A signieren.
+     */
+    public function testEinFremderHerstellerSigniertNichtFuerUnserProdukt(): void
+    {
+        $other = new Shop();
+        $products = new Products([$this->shop->product(), $other->product('b-tool')]);
+        $gate = $this->gate(products: $products);
+
+        $this->store->setKey('acme-tool', $other->key(self::LIC), self::NOW);
+        self::assertSame('invalidKey', $this->reason(gate: $gate), 'Schlüssel von B für A');
+        self::assertNull((new LicenseKeys($products))->read($other->key(self::LIC)), 'auch beim Eintragen nicht');
+
+        $this->store->setKey('acme-tool', $this->shop->key(self::LIC), self::NOW);
+        $this->store->saveConfirmation('acme-tool', $other->confirmation(self::LIC, $this->ins, self::NOW), self::NOW, self::NOW);
+        self::assertSame('invalidConfirmation', $this->reason(gate: $gate), 'Bestätigung von B für A');
+
+        $this->store->saveConfirmation('acme-tool', $this->shop->confirmation(self::LIC, $this->ins, self::NOW), self::NOW, self::NOW);
+        self::assertSame('active', $this->reason(gate: $gate));
+    }
+
+    /**
+     * Verteidigung in der Tiefe (Review LZ-7): Der Server hält proofUntil nie
+     * über das Abo-Ende (L5) — der Prüfer verlässt sich nicht allein darauf.
+     */
+    public function testNieUeberDasAboEnde(): void
+    {
+        $this->confirmed(['activeUntil' => self::NOW + 86400]);
+
+        self::assertSame('active', $this->reason(self::NOW + 86400));
+        self::assertSame('expired', $this->reason(self::NOW + 86400 + 1));
     }
 
     public function testDieFristLaeuftAb(): void
@@ -206,14 +242,32 @@ class LicenseGateTest extends TestCase
         $this->store->saveConfirmation('acme-tool', $this->shop->confirmation(self::LIC, $this->ins, $checkedAt, $overrides), $checkedAt, $checkedAt);
     }
 
-    private function reason(int $now = self::NOW): string
+    /**
+     * The reason — and with it whether the gate is open. Gefunden im Review
+     * (LZ-7): Prüfte der Helfer nur den Grund, überlebte ein `Verdict(true, …)`
+     * in jeder Ablehnungszeile; die Sperre wäre offen gewesen, die Suite grün.
+     */
+    private function reason(int $now = self::NOW, string $product = 'acme-tool', LicenseGate|null $gate = null): string
     {
-        return $this->gate()->verdict('acme-tool', $now)->reason;
+        $gate ??= $this->gate();
+        $verdict = $gate->verdict($product, $now);
+        $open = \in_array($verdict->reason, ['active', 'dev'], true);
+
+        self::assertSame($open, $verdict->allowed, 'offen nur bei active/dev, Grund: '.$verdict->reason);
+
+        try {
+            $gate->assertAllowed($product, $now);
+            self::assertTrue($open, 'assertAllowed ließ durch: '.$verdict->reason);
+        } catch (\InvalidArgumentException) {
+            self::assertFalse($open, 'assertAllowed sperrte trotz '.$verdict->reason);
+        }
+
+        return $verdict->reason;
     }
 
-    private function gate(string $environment = 'prod'): LicenseGate
+    private function gate(string $environment = 'prod', Products|null $products = null): LicenseGate
     {
-        $products = new Products([$this->shop->product()]);
+        $products ??= new Products([$this->shop->product()]);
 
         return new LicenseGate($products, $this->store, new Installation($this->connection), new LicenseKeys($products), $environment);
     }

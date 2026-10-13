@@ -144,6 +144,40 @@ class CommandsTest extends TestCase
         self::assertSame(['acme-tool'], $cron->run(time() + 27 * 3600));
     }
 
+    /**
+     * Gefunden im Review (LZ-7): Ein Fehler beim ersten Produkt (etwa aus der
+     * Datenbank) ließ die übrigen nicht mehr fragen. Jetzt fragen alle, und
+     * der Fehler kommt danach, damit Contao ihn protokolliert.
+     */
+    public function testEinFehlerHaeltDieAnderenNichtAuf(): void
+    {
+        $other = new Shop();
+        $products = new Products([$this->shop->product('a-tool'), $other->product('b-tool')]);
+        $this->store->setKey('a-tool', $this->shop->key(self::LIC, 'a-tool'), 0);
+        $this->store->setKey('b-tool', $other->key(self::LIC, 'b-tool'), 0);
+
+        $asked = [];
+        $fetcher = $this->createMock(LicenseFetcher::class);
+        $fetcher->method('fetch')->willReturnCallback(static function (string $product) use (&$asked): string {
+            $asked[] = $product;
+
+            if ('a-tool' === $product) {
+                throw new \RuntimeException('Datenbank weg');
+            }
+
+            return 'active';
+        });
+
+        try {
+            (new LicenseCron($products, $this->store, new Installation($this->connection), $fetcher))->run(time());
+            self::fail('Fehler erwartet');
+        } catch (\RuntimeException $e) {
+            self::assertSame('Datenbank weg', $e->getMessage());
+        }
+
+        self::assertSame(['a-tool', 'b-tool'], $asked);
+    }
+
     public function testStartseiteNurBeiSperreOderSiebenTagen(): void
     {
         require __DIR__.'/../../contao/languages/de/default.php';

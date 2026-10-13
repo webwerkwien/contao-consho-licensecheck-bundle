@@ -100,7 +100,7 @@ final class LicenseBackendController
                 $message->addConfirmation(\sprintf((string) ($lang['released'] ?? '%s released.'), $known->name()));
             }
         } catch (\InvalidArgumentException $e) {
-            $message->addError($e->getMessage());
+            $message->addError(LicenseEntry::NOT_A_KEY === $e->getCode() && \is_string($lang['notAKey'] ?? null) ? $lang['notAKey'] : $e->getMessage());
         }
     }
 }

@@ -39,6 +39,7 @@ $GLOBALS['TL_LANG']['CONSHO_LICENSECHECK'] = array_replace($GLOBALS['TL_LANG']['
         'invalidKey' => 'The key entered is not valid for this version.',
         'noKey' => 'No key entered.',
     ],
+    'notAKey' => 'This is not a licence key for any paid extension installed here. Check that it was copied completely.',
     'refresh' => 'Check now',
     'release' => 'Release installation',
     'releaseConfirm' => 'Release the installation? The key is deleted here and can then be entered in another installation. Until it is entered here again, the extension is locked.',

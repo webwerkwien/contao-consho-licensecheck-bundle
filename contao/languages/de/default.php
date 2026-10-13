@@ -39,6 +39,7 @@ $GLOBALS['TL_LANG']['CONSHO_LICENSECHECK'] = array_replace($GLOBALS['TL_LANG']['
         'invalidKey' => 'Der eingetragene Schlüssel gilt für diese Version nicht.',
         'noKey' => 'Kein Schlüssel eingetragen.',
     ],
+    'notAKey' => 'Das ist kein Lizenzschlüssel für eine hier installierte bezahlte Erweiterung. Bitte prüfen, ob er vollständig kopiert ist.',
     'refresh' => 'Jetzt prüfen',
     'release' => 'Installation freigeben',
     'releaseConfirm' => 'Installation freigeben? Der Schlüssel wird hier gelöscht und kann danach in einer anderen Installation eingetragen werden. Bis er hier wieder eingetragen ist, ist die Erweiterung gesperrt.',

@@ -85,6 +85,11 @@ class LicenseGate
             return new Verdict(false, $confirmation['state'], $activeUntil, $confirmation['proofUntil']);
         }
 
+        // The shop never proves past the end (L5); checked here as well.
+        if (null !== $activeUntil && $now > $activeUntil) {
+            return new Verdict(false, 'expired', $activeUntil, $confirmation['proofUntil']);
+        }
+
         if ($now > $confirmation['proofUntil']) {
             return new Verdict(false, 'proofExpired', $activeUntil, $confirmation['proofUntil']);
         }

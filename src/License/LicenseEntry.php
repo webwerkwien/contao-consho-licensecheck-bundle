@@ -11,6 +11,11 @@ use Webwerkwien\ContaoConshoLicensecheckBundle\Store\LicenseStore;
  */
 class LicenseEntry
 {
+    // The exception's code when the text is no key; the back end puts its
+    // own sentence in place of the English one (review LZ-7). A code, not a
+    // subclass: contao-ai reads exactly \InvalidArgumentException as refusal.
+    public const NOT_A_KEY = 1;
+
     public function __construct(
         private readonly LicenseKeys $keys,
         private readonly LicenseStore $store,
@@ -29,7 +34,7 @@ class LicenseEntry
         $read = $this->keys->read($key);
 
         if (null === $read) {
-            throw new \InvalidArgumentException('This is not a licence key for any paid extension installed here. Check that it was copied completely.');
+            throw new \InvalidArgumentException('This is not a licence key for any paid extension installed here. Check that it was copied completely.', self::NOT_A_KEY);
         }
 
         $product = $read['product']->productKey();

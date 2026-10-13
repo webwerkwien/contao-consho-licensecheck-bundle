@@ -1,0 +1,78 @@
+<?php declare(strict_types=1);
+
+namespace Webwerkwien\ContaoConshoLicensecheckBundle\Tests\Signature;
+
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
+use Webwerkwien\ContaoConshoLicensecheckBundle\Signature\SignedText;
+use Webwerkwien\ContaoConshoLicensecheckBundle\Tests\Fixtures\Shop;
+
+/**
+ * Block Lizenz 4.3: Was nicht genau dem Format entspricht, ergibt null — nie
+ * eine Ausnahme, nie ein Ergebnis. Nachgetragen nach dem Review (LZ-7): vier
+ * Gegenproben am Leser überlebten, weil er nur über das Gate geprüft wurde.
+ */
+class SignedTextTest extends TestCase
+{
+    private static Shop $first;
+
+    private static Shop $second;
+
+    public static function setUpBeforeClass(): void
+    {
+        self::$first = new Shop();
+        self::$second = new Shop();
+    }
+
+    public function testDerZweiteSchluesselWirdUeberSeineKennungGefunden(): void
+    {
+        $text = self::$second->sign('CONSHOC1', ['v' => 1, 'x' => 'y']);
+
+        self::assertSame('y', SignedText::read('CONSHOC1', $text, self::keys())['x'] ?? null);
+    }
+
+    /**
+     * @return iterable<string, array{0: callable(): string}>
+     */
+    public static function kaputt(): iterable
+    {
+        $valid = static fn (): string => self::$first->sign('CONSHOC1', ['v' => 1]);
+
+        yield 'ein vierter Teil' => [static fn (): string => $valid().'.AAAA'];
+        yield 'nur zwei Teile' => [static fn (): string => implode('.', \array_slice(explode('.', $valid()), 0, 2))];
+        yield 'andere Art' => [static fn (): string => self::$first->sign('CONSHO1', ['v' => 1])];
+        yield 'Signatur gekürzt' => [static function () use ($valid): string {
+            [$kind, $json] = explode('.', $valid());
+
+            return $kind.'.'.$json.'.'.rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
+        }];
+        yield 'Signatur mit Padding' => [static fn (): string => $valid().'=='];
+        yield 'kein JSON' => [static function (): string {
+            $json = rtrim(strtr(base64_encode('kein json'), '+/', '-_'), '=');
+
+            return 'CONSHOC1.'.$json.'.'.explode('.', self::$first->sign('CONSHOC1', ['v' => 1]))[2];
+        }];
+        yield 'ohne kid' => [static fn (): string => self::$first->sign('CONSHOC1', ['v' => 1], '')];
+        yield 'unbekannte kid' => [static fn (): string => self::$first->sign('CONSHOC1', ['v' => 1], str_repeat('0', 16))];
+        yield 'kid des anderen Schlüssels' => [static fn (): string => self::$first->sign('CONSHOC1', ['v' => 1], self::$second->kid)];
+        yield 'leer' => [static fn (): string => ''];
+        yield 'Unsinn' => [static fn (): string => 'CONSHOC1.!!!.???'];
+    }
+
+    #[DataProvider('kaputt')]
+    public function testKaputtErgibtNull(callable $text): void
+    {
+        self::assertNull(SignedText::read('CONSHOC1', $text(), self::keys()));
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private static function keys(): array
+    {
+        return [
+            self::$first->kid => base64_encode(self::$first->public),
+            self::$second->kid => base64_encode(self::$second->public),
+        ];
+    }
+}

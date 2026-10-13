@@ -45,6 +45,7 @@ class LicenseCron
     public function run(int $now): array
     {
         $asked = [];
+        $failure = null;
         $slot = self::slotOf($this->installation->id());
 
         foreach (array_keys($this->products->all()) as $product) {
@@ -54,8 +55,18 @@ class LicenseCron
                 continue;
             }
 
-            $this->fetcher->fetch($product, $now);
-            $asked[] = $product;
+            // One extension's failure does not keep the others from asking
+            // (review LZ-7); the first is thrown afterwards, so it is logged.
+            try {
+                $this->fetcher->fetch($product, $now);
+                $asked[] = $product;
+            } catch (\Throwable $e) {
+                $failure ??= $e;
+            }
+        }
+
+        if (null !== $failure) {
+            throw $failure;
         }
 
         return $asked;
