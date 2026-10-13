@@ -1,0 +1,78 @@
+{#
+  "System → Lizenzen" (block licence, 4.5). Rendered inside the back end
+  frame by LicenseBackendController; every form posts back to the same
+  address with Contao's request token. The key is never shown.
+#}
+{# Contao's own HTML. #}
+{{ messages|raw }}
+
+<div class="tl_listing_container">
+    {% if states is empty %}
+        <p class="tl_empty">{{ lang.none|default('') }}</p>
+    {% else %}
+        <table class="tl_listing">
+            <thead>
+                <tr>
+                    <th class="tl_folder_tlist">{{ lang.colProduct|default('Erweiterung') }}</th>
+                    <th class="tl_folder_tlist">{{ lang.colState|default('Zustand') }}</th>
+                    <th class="tl_folder_tlist">{{ lang.colFetched|default('Zuletzt bestätigt') }}</th>
+                    <th class="tl_folder_tlist"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for state in states %}
+                    <tr>
+                        <td class="tl_file_list">
+                            <strong>{{ state.name }}</strong> {{ state.version }}<br>
+                            <span class="tl_gray">{{ state.product }}{% if state.licenseId %} · {{ lang.licence|default('Lizenz') }} {{ state.licenseId }}{% endif %}</span>
+                        </td>
+                        <td class="tl_file_list">
+                            {% if state.allowed %}
+                                <span class="tl_green">{{ lang.reasonOk[state.reason]|default(state.reason) }}</span>
+                                {% if state.activeUntil %}<br>{{ lang.until|default('bis') }} {{ state.activeUntil|date('d.m.Y') }}{% endif %}
+                            {% else %}
+                                <span class="tl_red">{{ lang.reason[state.reason]|default(state.reason) }}</span>
+                            {% endif %}
+                            {% if state.error %}<br><span class="tl_gray">{{ lang.outcome[state.error]|default(state.error) }}</span>{% endif %}
+                        </td>
+                        <td class="tl_file_list">{{ state.fetchedAt ? state.fetchedAt|date('d.m.Y H:i') : '–' }}</td>
+                        <td class="tl_file_list tl_right_nowrap">
+                            {% if state.licenseId %}
+                                <form action="{{ action }}" method="post" style="display:inline">
+                                    <input type="hidden" name="FORM_SUBMIT" value="consho_licensecheck">
+                                    <input type="hidden" name="REQUEST_TOKEN" value="{{ contao.request_token }}">
+                                    <input type="hidden" name="product" value="{{ state.product }}">
+                                    <button type="submit" name="action" value="refresh" class="tl_submit">{{ lang.refresh|default('Jetzt prüfen') }}</button>
+                                    <button type="submit" name="action" value="release" class="tl_submit" onclick="return confirm({{ lang.releaseConfirm|default('OK?')|json_encode|e('html_attr') }})">{{ lang.release|default('Installation freigeben') }}</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+
+<form action="{{ action }}" method="post" class="tl_form">
+    <div class="tl_formbody_edit">
+        <input type="hidden" name="FORM_SUBMIT" value="consho_licensecheck">
+        <input type="hidden" name="REQUEST_TOKEN" value="{{ contao.request_token }}">
+        <input type="hidden" name="action" value="set">
+        <fieldset class="tl_box">
+            <legend>{{ lang.enterLegend|default('Lizenzschlüssel eintragen') }}</legend>
+            <div class="widget clr long">
+                <h3><label for="ctrl_licenseKey">{{ lang.enterLabel|default('Lizenzschlüssel') }}</label></h3>
+                <textarea name="licenseKey" id="ctrl_licenseKey" class="tl_textarea monospace" rows="3" autocomplete="off" spellcheck="false" required></textarea>
+                <p class="tl_help tl_tip">{{ lang.enterHelp|default('') }}</p>
+            </div>
+        </fieldset>
+    </div>
+    <div class="tl_formbody_submit">
+        <div class="tl_submit_container">
+            <button type="submit" class="tl_submit">{{ lang.enterSubmit|default('Eintragen und prüfen') }}</button>
+        </div>
+    </div>
+</form>
+
+<p class="tl_help tl_tip">{{ lang.installation|default('Installations-Kennung') }}: {{ installation }}</p>
