@@ -22,3 +22,11 @@ Ende (Spezifikation `docs/block-lizenz.md` im Repo des Consho-Kerns).
 - **Stündlicher Cron**, jede Installation in ihrer eigenen Stunde; **Startseite** mit Sperre und Warnung nach sieben
   Tagen ohne Antwort; **System → Lizenzen**; Befehle `consho:licensecheck:set`, `status`, `refresh`, `release` mit
   contao-ai-Verträgen (LZ-6)
+- **Nie über das Abo-Ende:** Die Sperre prüft `activeUntil` selbst mit, statt sich allein auf den Shop zu verlassen
+  (LZ-7)
+
+### Behoben
+
+- Der stündliche Cron fragt jede Erweiterung, auch wenn eine scheitert; der erste Fehler kommt danach (LZ-7)
+- „System → Lizenzen": ein Text, der kein Schlüssel ist, wird in der Sprache des Benutzers abgelehnt; die Knöpfe
+  brechen im schmalen Fenster um, statt abgeschnitten zu werden (LZ-7)
