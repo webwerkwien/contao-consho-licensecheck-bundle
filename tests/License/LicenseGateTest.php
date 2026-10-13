@@ -180,6 +180,21 @@ class LicenseGateTest extends TestCase
     }
 
     /**
+     * Auf c5 gefunden: Auf der Konsole ist TL_LANG nicht geladen — der Satz
+     * kommt über Contaos Übersetzer, der die Sprachdatei selbst lädt.
+     */
+    public function testDerSatzKommtUeberDenUebersetzer(): void
+    {
+        $translator = $this->createMock(\Symfony\Contracts\Translation\TranslatorInterface::class);
+        $translator->method('trans')->willReturnCallback(static fn (string $id, array $parameters, string|null $domain): string => 'contao_default' === $domain && 'CONSHO_LICENSECHECK.reason.noKey' === $id ? 'Kein Schlüssel.' : $id);
+        $products = new Products([$this->shop->product()]);
+        $gate = new LicenseGate($products, $this->store, new Installation($this->connection), new LicenseKeys($products), 'prod', $translator);
+
+        $this->expectExceptionMessage('Acme Tool: Kein Schlüssel.');
+        $gate->assertAllowed('acme-tool', self::NOW);
+    }
+
+    /**
      * @param array<string, mixed> $overrides
      */
     private function confirmed(array $overrides = [], int $checkedAt = self::NOW, bool $keepKey = false): void

@@ -3,6 +3,7 @@
 namespace Webwerkwien\ContaoConshoLicensecheckBundle\License;
 
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Webwerkwien\ContaoConshoLicensecheckBundle\Product\Products;
 use Webwerkwien\ContaoConshoLicensecheckBundle\Signature\SignedText;
 use Webwerkwien\ContaoConshoLicensecheckBundle\Store\Installation;
@@ -34,6 +35,8 @@ class LicenseGate
         private readonly LicenseKeys $keys,
         #[Autowire('%kernel.environment%')]
         private readonly string $environment,
+        #[Autowire(service: 'contao.translation.translator')]
+        private readonly TranslatorInterface|null $translator = null,
     ) {
     }
 
@@ -104,12 +107,24 @@ class LicenseGate
         }
 
         $product = $this->products->get($productKey);
-        $reasons = $GLOBALS['TL_LANG']['CONSHO_LICENSECHECK']['reason'] ?? [];
 
-        throw new \InvalidArgumentException(\sprintf(
-            '%s: %s',
-            null === $product ? $productKey : $product->name(),
-            (string) ($reasons[$verdict->reason] ?? 'licence check: '.$verdict->reason),
-        ));
+        throw new \InvalidArgumentException(\sprintf('%s: %s', null === $product ? $productKey : $product->name(), $this->sentence($verdict->reason)));
+    }
+
+    /**
+     * The reason as a sentence. Through Contao's translator where there is
+     * one: on the console TL_LANG is not loaded (seen on c5, LZ-6 — the
+     * refusal read "licence check: revoked"), and the translator loads it.
+     */
+    private function sentence(string $reason): string
+    {
+        $id = 'CONSHO_LICENSECHECK.reason.'.$reason;
+        $translated = null === $this->translator ? $id : $this->translator->trans($id, [], 'contao_default');
+
+        if ($translated !== $id) {
+            return $translated;
+        }
+
+        return (string) ($GLOBALS['TL_LANG']['CONSHO_LICENSECHECK']['reason'][$reason] ?? 'licence check: '.$reason);
     }
 }
