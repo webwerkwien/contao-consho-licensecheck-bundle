@@ -40,7 +40,7 @@ class LicenseCron
     }
 
     /**
-     * @return list<string> the products asked
+     * @return list<string> the products asked — not returned when one failed: then that failure is thrown, after all were asked
      */
     public function run(int $now): array
     {
