@@ -151,6 +151,17 @@ class LicenseGateTest extends TestCase
         self::assertSame('invalidKey', $this->reason());
     }
 
+    /**
+     * Gefunden durch Gegenproben: Schlüssel, Kennung und Version gehen nur
+     * verschlüsselt hinaus — ein Schlüssel mit http-Adresse gilt nicht.
+     */
+    public function testNurHttpsAdressen(): void
+    {
+        $this->store->setKey('acme-tool', $this->shop->key(self::LIC, url: 'http://shop.example.org/_consho/license/confirm'), self::NOW);
+
+        self::assertSame('invalidKey', $this->reason());
+    }
+
     public function testDieAblehnungNenntProduktUndGrund(): void
     {
         require __DIR__.'/../../contao/languages/de/default.php';
