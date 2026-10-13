@@ -1,0 +1,19 @@
+# PHPStan configuration, as in the sibling Consho packages.
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+
+parameters:
+    level: 6
+
+    paths:
+        - src
+        - tests
+
+    ignoreErrors:
+        # Level 6 wants a value type for every array parameter. For DCA rows and
+        # decoded payloads the shape is not known until runtime; where a shape
+        # IS known, write it out.
+        -
+            identifier: missingType.iterableValue
+            reportUnmatched: false

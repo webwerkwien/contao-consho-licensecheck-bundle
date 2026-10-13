@@ -1,0 +1,9 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Webwerkwien\ContaoConshoLicensecheckBundle\:
+        resource: ../src
+        exclude:
+            - ../src/{ContaoManager,ContaoConshoLicensecheckBundle.php}

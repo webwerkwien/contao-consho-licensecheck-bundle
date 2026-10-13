@@ -1,0 +1,63 @@
+{
+    "name": "webwerkwien/contao-consho-licensecheck-bundle",
+    "description": "Consho licence check - checks signed licence keys and daily confirmations in the installation, for several paid Contao extensions at once.",
+    "type": "contao-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michael Morgenbesser",
+            "homepage": "https://web.werk.wien",
+            "role": "Developer"
+        }
+    ],
+    "keywords": [
+        "contao",
+        "consho",
+        "licensing",
+        "license-key",
+        "license-check"
+    ],
+    "require": {
+        "php": "^8.4.1",
+        "ext-sodium": "*",
+        "contao/core-bundle": "^5.7",
+        "symfony/http-client": "^7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "contao/manager-plugin": "^2.13",
+        "webwerkwien/contao-ai-core-bundle": "^1.6"
+    },
+    "suggest": {
+        "webwerkwien/contao-ai-core-bundle": "Brings the consho:licensecheck commands to contao-ai's CLI and back end chat"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webwerkwien\\ContaoConshoLicensecheckBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Webwerkwien\\ContaoConshoLicensecheckBundle\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "contao-manager-plugin": "Webwerkwien\\ContaoConshoLicensecheckBundle\\ContaoManager\\Plugin"
+    },
+    "scripts": {
+        "phpstan": "phpstan analyse --memory-limit=1G",
+        "phpunit": "phpunit",
+        "ci": [
+            "@phpstan",
+            "@phpunit"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "contao/manager-plugin": true,
+            "php-http/discovery": true
+        }
+    }
+}
