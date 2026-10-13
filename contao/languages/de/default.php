@@ -15,3 +15,6 @@ $GLOBALS['TL_LANG']['CONSHO_LICENSECHECK']['reason'] = [
     'taken' => 'Der Lizenzschlüssel ist an einer anderen Installation aktiv. In „Meine Bestellungen“ des Shops oder an der anderen Installation freigeben.',
     'proofExpired' => 'Seit 14 Tagen keine Bestätigung vom Lizenzserver. Unter System → Lizenzen „Jetzt prüfen“.',
 ];
+
+// Start page note while still allowed, %s is the extension's name.
+$GLOBALS['TL_LANG']['CONSHO_LICENSECHECK']['stale'] = '%s: Seit 7 Tagen keine Bestätigung vom Lizenzserver. Nach 14 Tagen wird gesperrt — unter System → Lizenzen „Jetzt prüfen“.';
