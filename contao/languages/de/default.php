@@ -16,8 +16,9 @@ $GLOBALS['TL_LANG']['CONSHO_LICENSECHECK']['reason'] = [
     'proofExpired' => 'Seit 14 Tagen keine Bestätigung vom Lizenzserver. Unter System → Lizenzen „Jetzt prüfen“.',
 ];
 
-// "System → Lizenzen".
-$GLOBALS['TL_LANG']['CONSHO_LICENSECHECK'] += [
+// "System → Lizenzen". array_replace, not +=: Contao loads the English file
+// first as fallback, and += would keep its sentences (seen on c5, LZ-6).
+$GLOBALS['TL_LANG']['CONSHO_LICENSECHECK'] = array_replace($GLOBALS['TL_LANG']['CONSHO_LICENSECHECK'] ?? [], [
     'none' => 'Hier ist keine bezahlte Erweiterung installiert, die eine Lizenz braucht.',
     'colProduct' => 'Erweiterung',
     'colState' => 'Zustand',
@@ -47,7 +48,7 @@ $GLOBALS['TL_LANG']['CONSHO_LICENSECHECK'] += [
     'enterHelp' => 'Von der Bestellseite des Shops. Zu welcher Erweiterung er gehört, steht im Schlüssel. Er wird sofort geprüft und danach nicht mehr angezeigt.',
     'enterSubmit' => 'Eintragen und prüfen',
     'installation' => 'Installations-Kennung (zufällig, sagt nichts über die Website)',
-];
+]);
 
 // Start page note while still allowed, %s is the extension's name.
 $GLOBALS['TL_LANG']['CONSHO_LICENSECHECK']['stale'] = '%s: Seit 7 Tagen keine Bestätigung vom Lizenzserver. Nach 14 Tagen wird gesperrt — unter System → Lizenzen „Jetzt prüfen“.';

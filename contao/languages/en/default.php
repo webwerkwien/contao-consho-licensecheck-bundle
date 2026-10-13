@@ -16,8 +16,9 @@ $GLOBALS['TL_LANG']['CONSHO_LICENSECHECK']['reason'] = [
     'proofExpired' => 'No confirmation from the licence server for 14 days. Use "Check now" under System → Licences.',
 ];
 
-// "System → Licences".
-$GLOBALS['TL_LANG']['CONSHO_LICENSECHECK'] += [
+// "System → Licences". array_replace, not +=: a language loaded after this
+// one must be able to replace these sentences.
+$GLOBALS['TL_LANG']['CONSHO_LICENSECHECK'] = array_replace($GLOBALS['TL_LANG']['CONSHO_LICENSECHECK'] ?? [], [
     'none' => 'No paid extension that needs a licence is installed here.',
     'colProduct' => 'Extension',
     'colState' => 'State',
@@ -47,7 +48,7 @@ $GLOBALS['TL_LANG']['CONSHO_LICENSECHECK'] += [
     'enterHelp' => 'From the shop\'s order page. The key itself says which extension it is for. It is checked at once and not shown again.',
     'enterSubmit' => 'Enter and check',
     'installation' => 'Installation id (random, says nothing about the site)',
-];
+]);
 
 // Start page note while still allowed, %s is the extension's name.
 $GLOBALS['TL_LANG']['CONSHO_LICENSECHECK']['stale'] = '%s: no confirmation from the licence server for 7 days. It locks after 14 days — use "Check now" under System → Licences.';
