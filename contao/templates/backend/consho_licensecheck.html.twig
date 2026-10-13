@@ -24,7 +24,7 @@
                     <tr>
                         <td class="tl_file_list">
                             <strong>{{ state.name }}</strong> {{ state.version }}<br>
-                            <span class="tl_gray">{{ state.product }}{% if state.licenseId %} · {{ lang.licence|default('Lizenz') }} {{ state.licenseId }}{% endif %}</span>
+                            <span class="tl_gray" style="overflow-wrap:anywhere">{{ state.product }}{% if state.licenseId %} · {{ lang.licence|default('Lizenz') }} {{ state.licenseId }}{% endif %}</span>
                         </td>
                         <td class="tl_file_list">
                             {% if state.allowed %}
@@ -36,9 +36,10 @@
                             {% if state.error %}<br><span class="tl_gray">{{ lang.outcome[state.error]|default(state.error) }}</span>{% endif %}
                         </td>
                         <td class="tl_file_list">{{ state.fetchedAt ? state.fetchedAt|date('d.m.Y H:i') : '–' }}</td>
-                        <td class="tl_file_list tl_right_nowrap">
+                        {# Wraps in a narrow window instead of cutting the buttons off (LZ-6). #}
+                        <td class="tl_file_list">
                             {% if state.licenseId %}
-                                <form action="{{ action }}" method="post" style="display:inline">
+                                <form action="{{ action }}" method="post" style="display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px">
                                     <input type="hidden" name="FORM_SUBMIT" value="consho_licensecheck">
                                     <input type="hidden" name="REQUEST_TOKEN" value="{{ contao.request_token }}">
                                     <input type="hidden" name="product" value="{{ state.product }}">
