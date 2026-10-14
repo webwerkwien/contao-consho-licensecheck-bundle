@@ -93,6 +93,17 @@ class CommandsTest extends TestCase
         $tester->execute([], ['interactive' => false]);
     }
 
+    /**
+     * Über contao-ai (contao:ai:run, StringInput ohne Strom) kommt kein STDIN
+     * an — gelesen hätte er bis zum Abbruch der CLI nach 60 s gewartet.
+     */
+    public function testUeberContaoAiSofortAbgelehnt(): void
+    {
+        $this->expectExceptionMessage('which contao-ai does not pass on');
+
+        (new SecretInput('cli'))->read(new \Symfony\Component\Console\Input\StringInput(''), new \Symfony\Component\Console\Output\BufferedOutput(), 'Licence key');
+    }
+
     public function testZustandOhneSchluessel(): void
     {
         $this->set($this->shop->key(self::LIC)."\n");

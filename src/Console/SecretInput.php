@@ -5,6 +5,7 @@ namespace Webwerkwien\ContaoConshoLicensecheckBundle\Console;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\StreamableInputInterface;
+use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
@@ -33,7 +34,17 @@ final class SecretInput
             throw new \InvalidArgumentException('The licence key is taken on the console only, through STDIN — not in the chat. Enter it under System → Licences or on the console.');
         }
 
-        $stream = ($input instanceof StreamableInputInterface ? $input->getStream() : null) ?? \STDIN;
+        $given = $input instanceof StreamableInputInterface ? $input->getStream() : null;
+
+        // contao:ai:run starts a command from a StringInput and passes no
+        // STDIN on: reading the server process's own STDIN waited until
+        // contao-ai-cli gave up after 60 s (seen with consho:product:keys,
+        // CLI coverage acceptance). Refused at once instead.
+        if (null === $given && $input instanceof StringInput) {
+            throw new \InvalidArgumentException('The licence key needs the console\'s own STDIN, which contao-ai does not pass on: run "php bin/console consho:licensecheck:set" over SSH, or enter it under System → Licences.');
+        }
+
+        $stream = $given ?? \STDIN;
 
         if ($input->isInteractive() && stream_isatty($stream)) {
             $value = (string) (new QuestionHelper())->ask($input, $output, (new Question($label.': '))->setHidden(true)->setHiddenFallback(false));
