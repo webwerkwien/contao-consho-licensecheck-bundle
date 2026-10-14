@@ -15,7 +15,7 @@ Ende (Spezifikation `docs/block-lizenz.md` im Repo des Consho-Kerns).
 - Grundgerüst: Composer-Paket (MIT), nur an Contao gebunden, nicht an den Consho-Kern (LZ-6)
 - **Anmeldung bezahlter Erweiterungen** über `LicensedProductInterface` mit Produkt-Kennung, Version und den
   öffentlichen Schlüsseln des Verkäufers — aus dem Code der Erweiterung, nie aus der Konfiguration (LZ-6)
-- **Sperre** `LicenseGate`: offline bei jedem Aufruf neu geprüft — signiert, eigener Schlüssel, eigene Installation,
+- **Sperre** `LicenseGate`: offline bei jedem Aufruf neu geprüft — signiert, Format-Version 1, eigener Schlüssel, eigene Installation,
   aktiv, Frist nicht vorbei, Uhr nicht zurückgestellt; in `dev` frei (LZ-6)
 - **Abholung** der täglichen Bestätigung mit Schlüssel, Installations-Kennung und Version; nicht erreichbar,
   gedrosselt, unbekannt oder unsigniert behält die letzte Bestätigung (LZ-6)

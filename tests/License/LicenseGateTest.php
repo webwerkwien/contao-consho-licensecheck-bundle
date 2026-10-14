@@ -158,6 +158,10 @@ class LicenseGateTest extends TestCase
         yield 'fremde Lizenz' => [static fn (Shop $s, string $ins): string => $s->confirmation(str_repeat('b', 32), $ins, self::NOW)];
         yield 'fremdes Paar' => [static fn (Shop $s, string $ins): string => (new Shop())->confirmation(self::LIC, $ins, self::NOW)];
         yield 'fremdes Paar mit unserer Kennung' => [static fn (Shop $s, string $ins): string => (new Shop())->sign('CONSHOC1', ['v' => 1, 'lic' => self::LIC, 'ins' => $ins, 'state' => 'active', 'activeUntil' => null, 'checkedAt' => self::NOW, 'proofUntil' => self::NOW + 99_999_999], $s->kid)];
+        // Codex-Review 2026-10-14: die Version wie beim Schlüssel — eine
+        // künftige Fassung mit anderer Bedeutung wird nicht als v1 gelesen.
+        yield 'andere Version' => [static fn (Shop $s, string $ins): string => $s->confirmation(self::LIC, $ins, self::NOW, ['v' => 2])];
+        yield 'ohne Version' => [static fn (Shop $s, string $ins): string => $s->confirmation(self::LIC, $ins, self::NOW, ['v' => null])];
         yield 'ein Schlüssel statt Bestätigung' => [static fn (Shop $s, string $ins): string => $s->key(self::LIC)];
         yield 'von Hand verlängert' => [static function (Shop $s, string $ins): string {
             [$kind, $json, $signature] = explode('.', $s->confirmation(self::LIC, $ins, self::NOW));

@@ -69,7 +69,9 @@ class LicenseGate
 
         $confirmation = SignedText::read(SignedText::CONFIRMATION, (string) $row['confirmation'], $product->publicKeys());
 
-        if (null === $confirmation || ($confirmation['lic'] ?? null) !== $key['lic'] || ($confirmation['ins'] ?? null) !== $this->installation->id()
+        // The version as for the key (LicenseKeys): a later format with
+        // another meaning is not read as this one (Codex review 2026-10-14).
+        if (null === $confirmation || 1 !== ($confirmation['v'] ?? null) || ($confirmation['lic'] ?? null) !== $key['lic'] || ($confirmation['ins'] ?? null) !== $this->installation->id()
             || !\is_int($confirmation['checkedAt'] ?? null) || !\is_int($confirmation['proofUntil'] ?? null) || !\is_string($confirmation['state'] ?? null)) {
             return new Verdict(false, 'invalidConfirmation');
         }
