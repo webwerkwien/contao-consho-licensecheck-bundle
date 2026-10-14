@@ -19,6 +19,7 @@ use Webwerkwien\ContaoConshoLicensecheckBundle\Product\Products;
 #[\Webwerkwien\ContaoAiCoreBundle\Attribute\AiContract(
     writes: true,
     tables: ['tl_consho_licensecheck'],
+    trace: [],
     irreversible: 'Frees this installation\'s place in the shop; the extension is locked here until its key is entered again.',
     repeatable: true,
     answerShape: ['status', 'product', 'shop'],

@@ -196,6 +196,17 @@ class CommandsTest extends TestCase
         self::assertFalse($contract(StatusCommand::class)->writes);
         self::assertNotNull($contract(ReleaseCommand::class)->irreversible);
         self::assertTrue($contract(SetKeyCommand::class)->writes);
+
+        // Gelesen wie contao-ai sie liest: ein Vertrag mit Mängeln wird dort
+        // gekürzt angezeigt — „writes ohne trace" stand bis 2026-10-14 an allen
+        // drei schreibenden Befehlen (CLI-Abdeckung, Abnahme).
+        foreach (glob(__DIR__.'/../../src/Command/*Command.php') ?: [] as $file) {
+            $class = 'Webwerkwien\\ContaoConshoLicensecheckBundle\\Command\\'.basename($file, '.php');
+            $read = \Webwerkwien\ContaoAiCoreBundle\Contract\ContractReader::read($class);
+
+            self::assertIsArray($read, $class);
+            self::assertSame([], $read['problems'], $class);
+        }
     }
 
     private function set(string $stdin): CommandTester

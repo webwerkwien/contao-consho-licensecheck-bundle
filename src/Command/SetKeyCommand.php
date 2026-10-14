@@ -17,6 +17,7 @@ use Webwerkwien\ContaoConshoLicensecheckBundle\License\LicenseEntry;
 #[\Webwerkwien\ContaoAiCoreBundle\Attribute\AiContract(
     writes: true,
     tables: ['tl_consho_licensecheck', 'tl_consho_licensecheck_installation'],
+    trace: [],
     repeatable: true,
     answerShape: ['status', 'product', 'name', 'outcome'],
 )]
