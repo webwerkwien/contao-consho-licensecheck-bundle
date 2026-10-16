@@ -12,9 +12,10 @@ Verkaufsshop ist `webwerkwien/contao-consho-licensing-bundle` (proprietär).
 
 **Hängt nicht am Consho-Kern**, nur an Contao — damit jede Contao-Erweiterung ihn nutzen kann.
 
-**Die Spezifikation liegt im Kern-Repo:** `contao-consho-bundle/docs/block-lizenz.md` (Block Lizenz, Abschnitt 4.5,
-Entscheidungen L18, L19, P1, P2, Plan LZ-6). Vor jeder Änderung dort nachlesen; nach jedem Plan die Zeile dort
-nachführen.
+**Die Spezifikation liegt im privaten Entwicklungsrepo des Kerns** (`contao-consho-bundle-dev`,
+`docs/block-lizenz.md`: Block Lizenz, Abschnitt 4.5, Entscheidungen L18, L19, P1, P2, Plan LZ-6) und ist nicht
+veröffentlicht. Wer Zugang hat: vor jeder Änderung dort nachlesen, nach jedem Plan die Zeile dort nachführen.
+Ohne Zugang gelten README und Code.
 
 ## Grundsätze
 

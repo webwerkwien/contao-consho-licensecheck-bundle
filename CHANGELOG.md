@@ -5,10 +5,10 @@ Alle nennenswerten Änderungen an diesem Paket.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
-## [Unveröffentlicht]
+## [0.1.0] – 2026-10-16
 
-Noch keine Version veröffentlicht. Jeder Eintrag beschreibt den heutigen Stand; der Plan steht in Klammern am
-Ende (Spezifikation `docs/block-lizenz.md` im Repo des Consho-Kerns).
+Erste veröffentlichte Version. Jeder Eintrag beschreibt den Stand zu diesem Release; der Plan steht in Klammern
+am Ende (die Spezifikation gehört zum Entwicklungsrepo des Consho-Kerns und ist nicht veröffentlicht).
 
 ### Hinzugefügt
 
