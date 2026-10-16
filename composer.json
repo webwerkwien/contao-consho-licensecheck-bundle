@@ -17,6 +17,11 @@
         "license-key",
         "license-check"
     ],
+    "homepage": "https://github.com/webwerkwien/contao-consho-licensecheck-bundle",
+    "support": {
+        "issues": "https://github.com/webwerkwien/contao-consho-licensecheck-bundle/issues",
+        "source": "https://github.com/webwerkwien/contao-consho-licensecheck-bundle"
+    },
     "require": {
         "php": "^8.4.1",
         "ext-sodium": "*",
@@ -44,6 +49,9 @@
         }
     },
     "extra": {
+        "branch-alias": {
+            "dev-main": "0.1.x-dev"
+        },
         "contao-manager-plugin": "Webwerkwien\\ContaoConshoLicensecheckBundle\\ContaoManager\\Plugin"
     },
     "scripts": {
