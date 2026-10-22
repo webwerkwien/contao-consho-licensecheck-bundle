@@ -20,6 +20,9 @@ Ohne Zugang gelten README und Code.
 ## Grundsätze
 
 - **Agent-neutral:** keine Anweisungen, Pfade oder Dateinamen, die an ein bestimmtes Werkzeug gebunden sind.
+- **Keine Interna im CHANGELOG** (und damit in der GitHub-Release-Notiz, die ihn kopiert): keine Namen, keine
+  Review- oder Abnahme-Kürzel, keine Server, keine Testdaten, keine Schlüssel oder Kennungen — nur, was sich für
+  Betreiber ändert. Blockverweise wie „(LZ-6)" bleiben.
 - **Vertraute öffentliche Schlüssel kommen aus dem Code des Moduls** (P1), nie aus der Konfiguration der
   Installation — sonst trüge ein Kunde sein eigenes Paar ein.
 - **Kein Kopierschutz** (L4): PHP ist lesbar. Der Prüfer schützt ehrliche Kunden vor Missverständnissen und macht
