@@ -5,7 +5,7 @@ Alle nennenswerten Änderungen an diesem Paket.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
-## [Unreleased]
+## [0.1.2] – 2026-10-22
 
 ### Geändert
 
