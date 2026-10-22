@@ -5,6 +5,12 @@ Alle nennenswerten Änderungen an diesem Paket.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [0.1.1] – 2026-10-22
+
+### Geändert
+
+- `AGENTS.md` und `CLAUDE.md` (Arbeitsregeln für Entwickler) sind nicht mehr Teil des Pakets.
+
 ## [0.1.0] – 2026-10-16
 
 Erste veröffentlichte Version. Jeder Eintrag beschreibt den Stand zu diesem Release; der Plan steht in Klammern
