@@ -18,6 +18,7 @@ use Webwerkwien\ContaoConshoLicensecheckBundle\Product\Products;
     writes: true,
     tables: ['tl_consho_licensecheck'],
     trace: [],
+    irreversible: 'Sends each key to the shop named in it, which gives this installation the licence\'s place if nobody holds it; only a release frees it again.',
     repeatable: true,
     answerShape: ['outcomes'],
 )]

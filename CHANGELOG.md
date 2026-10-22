@@ -5,6 +5,15 @@ Alle nennenswerten Änderungen an diesem Paket.
 Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 die Versionierung an [Semantic Versioning](https://semver.org/lang/de/).
 
+## [Unreleased]
+
+### Geändert
+
+- `consho:licensecheck:set` und `consho:licensecheck:refresh` erklären sich als unumkehrbar (`irreversible` im
+  `#[AiContract]`): Sie schicken den Schlüssel an den Shop, und der gibt dieser Installation den Platz der Lizenz,
+  den nur eine Freigabe wieder löst. Ab contao-ai backend v0.22.1 laufen sie deshalb nicht im Backend-Chat, sondern
+  über `contao-ai-cli ext run`.
+
 ## [0.1.1] – 2026-10-22
 
 ### Geändert
