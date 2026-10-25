@@ -25,7 +25,7 @@ class TemplatesTest extends TestCase
     }
 
     /**
-     * Die Seite zeigt nie den Schlüssel — auch nicht dem, der ihn eingetragen hat.
+     * The page never shows the key — not even to whoever entered it.
      */
     public function testDieSeiteKenntKeinenSchluessel(): void
     {

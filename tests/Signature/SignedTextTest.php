@@ -8,9 +8,9 @@ use Webwerkwien\ContaoConshoLicensecheckBundle\Signature\SignedText;
 use Webwerkwien\ContaoConshoLicensecheckBundle\Tests\Fixtures\Shop;
 
 /**
- * Block Lizenz 4.3: Was nicht genau dem Format entspricht, ergibt null — nie
- * eine Ausnahme, nie ein Ergebnis. Nachgetragen nach dem Review (LZ-7): vier
- * Gegenproben am Leser überlebten, weil er nur über das Gate geprüft wurde.
+ * Block licence 4.3: whatever does not match the format exactly gives null —
+ * never an exception, never a result (LZ-7). Tested on the reader itself, not
+ * only through the gate, which let four mutations of the reader pass.
  */
 class SignedTextTest extends TestCase
 {

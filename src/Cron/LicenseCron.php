@@ -56,7 +56,7 @@ class LicenseCron
             }
 
             // One extension's failure does not keep the others from asking
-            // (review LZ-7); the first is thrown afterwards, so it is logged.
+            // (LZ-7); the first is thrown afterwards, so it is logged.
             try {
                 $this->fetcher->fetch($product, $now);
                 $asked[] = $product;

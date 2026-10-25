@@ -37,10 +37,10 @@ final class SecretInput
         $given = $input instanceof StreamableInputInterface ? $input->getStream() : null;
 
         // contao:ai:run starts a command from a StringInput and passes no
-        // STDIN on. Secrets never go through contao-ai (Michael, 2026-10-14),
-        // so this refuses at once and names the way over SSH. The 60 s hang
-        // seen at the acceptance came from Windows' ssh.exe not passing an
-        // empty stdin's end on, not from the server.
+        // STDIN on. Secrets never go through contao-ai, so this refuses at
+        // once and names the way over SSH. A 60 s hang on such a call comes
+        // from Windows' ssh.exe not passing an empty stdin's end on, not from
+        // the server.
         if (null === $given && $input instanceof StringInput) {
             throw new \InvalidArgumentException('The licence key needs the console\'s own STDIN, which contao-ai does not pass on: run "php bin/console consho:licensecheck:set" over SSH, or enter it under System → Licences.');
         }

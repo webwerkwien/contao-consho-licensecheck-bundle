@@ -27,9 +27,9 @@ use Webwerkwien\ContaoConshoLicensecheckBundle\Tests\Fixtures\Shop;
 use Webwerkwien\ContaoConshoLicensecheckBundle\Tests\Schema;
 
 /**
- * Block Lizenz 4.5 und L7: eintragen verdeckt und sofort bestätigt, falsch
- * wird nicht gespeichert; Zustand ohne Schlüssel; Cron in der eigenen Stunde;
- * Startseite nur bei Sperre oder 7 Tagen ohne Antwort.
+ * Block licence 4.5 and L7: entered hidden and confirmed at once, a wrong key
+ * is not stored; state without a key; the cron in its own hour; the start
+ * page only when locked or after 7 days without an answer.
  */
 class CommandsTest extends TestCase
 {
@@ -94,8 +94,8 @@ class CommandsTest extends TestCase
     }
 
     /**
-     * Über contao-ai (contao:ai:run, StringInput ohne Strom) kommt kein STDIN
-     * an — gelesen hätte er bis zum Abbruch der CLI nach 60 s gewartet.
+     * Through contao-ai (contao:ai:run, a StringInput without a stream) no
+     * STDIN arrives — a read would have waited until the CLI gave up after 60 s.
      */
     public function testUeberContaoAiSofortAbgelehnt(): void
     {
@@ -156,9 +156,9 @@ class CommandsTest extends TestCase
     }
 
     /**
-     * Gefunden im Review (LZ-7): Ein Fehler beim ersten Produkt (etwa aus der
-     * Datenbank) ließ die übrigen nicht mehr fragen. Jetzt fragen alle, und
-     * der Fehler kommt danach, damit Contao ihn protokolliert.
+     * LZ-7: a failure at the first product (from the database, say) kept the
+     * others from asking. Now all of them ask, and the failure comes
+     * afterwards, so that Contao logs it.
      */
     public function testEinFehlerHaeltDieAnderenNichtAuf(): void
     {
@@ -208,9 +208,9 @@ class CommandsTest extends TestCase
         self::assertNotNull($contract(ReleaseCommand::class)->irreversible);
         self::assertTrue($contract(SetKeyCommand::class)->writes);
 
-        // Gelesen wie contao-ai sie liest: ein Vertrag mit Mängeln wird dort
-        // gekürzt angezeigt — „writes ohne trace" stand bis 2026-10-14 an allen
-        // drei schreibenden Befehlen (CLI-Abdeckung, Abnahme).
+        // Read as contao-ai reads them: a contract with defects is shown there
+        // shortened — "writes without trace" once stood on all three writing
+        // commands.
         foreach (glob(__DIR__.'/../../src/Command/*Command.php') ?: [] as $file) {
             $class = 'Webwerkwien\\ContaoConshoLicensecheckBundle\\Command\\'.basename($file, '.php');
             $read = \Webwerkwien\ContaoAiCoreBundle\Contract\ContractReader::read($class);

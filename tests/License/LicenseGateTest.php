@@ -13,9 +13,9 @@ use Webwerkwien\ContaoConshoLicensecheckBundle\Tests\Fixtures\Shop;
 use Webwerkwien\ContaoConshoLicensecheckBundle\Tests\Schema;
 
 /**
- * Block Lizenz 4.5: die Sperre an einer Stelle, offline, bei jedem Aufruf neu
- * geprüft — signiert, eigener Schlüssel, eigene Installation, `active`, Frist
- * nicht vorbei, Uhr nicht zurückgestellt. In `dev` frei (L4).
+ * Block licence 4.5: the lock in one place, offline, checked anew on every
+ * call — signed, own key, own installation, `active`, proof period not over,
+ * clock not turned back. Open in `dev` (L4).
  */
 class LicenseGateTest extends TestCase
 {
@@ -70,10 +70,10 @@ class LicenseGateTest extends TestCase
     }
 
     /**
-     * L19, 4.5: Jedes Produkt prüft nur mit den Schlüsseln, die es selbst
-     * nennt. Gefunden im Review (LZ-7): Mit einem Produkt je Test überlebte
-     * „alle Schlüssel aller Produkte zusammen" — dann könnte Hersteller B
-     * Bestätigungen und Schlüssel für das Produkt von A signieren.
+     * L19, 4.5: every product checks only with the keys it names itself
+     * (LZ-7). With one product per test, "all keys of all products together"
+     * went unnoticed — vendor B could then sign confirmations and keys for
+     * vendor A's product.
      */
     public function testEinFremderHerstellerSigniertNichtFuerUnserProdukt(): void
     {
@@ -94,8 +94,8 @@ class LicenseGateTest extends TestCase
     }
 
     /**
-     * Verteidigung in der Tiefe (Review LZ-7): Der Server hält proofUntil nie
-     * über das Abo-Ende (L5) — der Prüfer verlässt sich nicht allein darauf.
+     * Defence in depth (LZ-7): the server never keeps proofUntil past the end
+     * of the subscription (L5) — the checker does not rely on that alone.
      */
     public function testNieUeberDasAboEnde(): void
     {
@@ -148,7 +148,7 @@ class LicenseGateTest extends TestCase
     }
 
     /**
-     * Was in der Datenbank steht, wird nicht geglaubt.
+     * What is in the database is not believed.
      *
      * @return iterable<string, array{0: callable(Shop, string): string}>
      */
@@ -158,8 +158,8 @@ class LicenseGateTest extends TestCase
         yield 'fremde Lizenz' => [static fn (Shop $s, string $ins): string => $s->confirmation(str_repeat('b', 32), $ins, self::NOW)];
         yield 'fremdes Paar' => [static fn (Shop $s, string $ins): string => (new Shop())->confirmation(self::LIC, $ins, self::NOW)];
         yield 'fremdes Paar mit unserer Kennung' => [static fn (Shop $s, string $ins): string => (new Shop())->sign('CONSHOC1', ['v' => 1, 'lic' => self::LIC, 'ins' => $ins, 'state' => 'active', 'activeUntil' => null, 'checkedAt' => self::NOW, 'proofUntil' => self::NOW + 99_999_999], $s->kid)];
-        // Codex-Review 2026-10-14: die Version wie beim Schlüssel — eine
-        // künftige Fassung mit anderer Bedeutung wird nicht als v1 gelesen.
+        // The version as for the key: a later format with another meaning is
+        // not read as v1.
         yield 'andere Version' => [static fn (Shop $s, string $ins): string => $s->confirmation(self::LIC, $ins, self::NOW, ['v' => 2])];
         yield 'ohne Version' => [static fn (Shop $s, string $ins): string => $s->confirmation(self::LIC, $ins, self::NOW, ['v' => null])];
         yield 'ein Schlüssel statt Bestätigung' => [static fn (Shop $s, string $ins): string => $s->key(self::LIC)];
@@ -192,8 +192,8 @@ class LicenseGateTest extends TestCase
     }
 
     /**
-     * Gefunden durch Gegenproben: Schlüssel, Kennung und Version gehen nur
-     * verschlüsselt hinaus — ein Schlüssel mit http-Adresse gilt nicht.
+     * Key, installation id and version leave only encrypted — a key with an
+     * http address does not count.
      */
     public function testNurHttpsAdressen(): void
     {
@@ -220,8 +220,8 @@ class LicenseGateTest extends TestCase
     }
 
     /**
-     * Auf c5 gefunden: Auf der Konsole ist TL_LANG nicht geladen — der Satz
-     * kommt über Contaos Übersetzer, der die Sprachdatei selbst lädt.
+     * On the console TL_LANG is not loaded — the sentence comes through
+     * Contao's translator, which loads the language file itself.
      */
     public function testDerSatzKommtUeberDenUebersetzer(): void
     {
@@ -247,9 +247,9 @@ class LicenseGateTest extends TestCase
     }
 
     /**
-     * The reason — and with it whether the gate is open. Gefunden im Review
-     * (LZ-7): Prüfte der Helfer nur den Grund, überlebte ein `Verdict(true, …)`
-     * in jeder Ablehnungszeile; die Sperre wäre offen gewesen, die Suite grün.
+     * The reason — and with it whether the gate is open (LZ-7). Had the helper
+     * checked the reason only, a `Verdict(true, …)` in any refusal line would
+     * have gone unnoticed: the lock open, the suite green.
      */
     private function reason(int $now = self::NOW, string $product = 'acme-tool', LicenseGate|null $gate = null): string
     {

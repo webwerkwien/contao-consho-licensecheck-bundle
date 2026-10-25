@@ -16,9 +16,9 @@ use Webwerkwien\ContaoConshoLicensecheckBundle\Tests\Fixtures\Shop;
 use Webwerkwien\ContaoConshoLicensecheckBundle\Tests\Schema;
 
 /**
- * Block Lizenz 4.3/4.5: die Abholung an die Adresse im Schlüssel — übertragen
- * nur Schlüssel, Kennung, Version (L8, E1); nicht erreichbar, gedrosselt,
- * `unknown` oder unsigniert behält die letzte Bestätigung (E2, E3).
+ * Block licence 4.3/4.5: fetching from the address in the key — only key,
+ * installation id and version are sent (L8, E1); unreachable, throttled,
+ * `unknown` or unsigned keeps the last confirmation (E2, E3).
  */
 class LicenseFetcherTest extends TestCase
 {

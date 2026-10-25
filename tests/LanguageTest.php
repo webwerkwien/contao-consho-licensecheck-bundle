@@ -5,7 +5,7 @@ namespace Webwerkwien\ContaoConshoLicensecheckBundle\Tests;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Seen on c5 (LZ-6): Contao loads the English file first as fallback, then
+ * LZ-6: Contao loads the English file first as fallback, then
  * the user's language. The page texts were added with `+=`, which keeps
  * existing keys — the page stayed English for a German user.
  */

@@ -70,7 +70,7 @@ class LicenseGate
         $confirmation = SignedText::read(SignedText::CONFIRMATION, (string) $row['confirmation'], $product->publicKeys());
 
         // The version as for the key (LicenseKeys): a later format with
-        // another meaning is not read as this one (Codex review 2026-10-14).
+        // another meaning is not read as this one.
         if (null === $confirmation || 1 !== ($confirmation['v'] ?? null) || ($confirmation['lic'] ?? null) !== $key['lic'] || ($confirmation['ins'] ?? null) !== $this->installation->id()
             || !\is_int($confirmation['checkedAt'] ?? null) || !\is_int($confirmation['proofUntil'] ?? null) || !\is_string($confirmation['state'] ?? null)) {
             return new Verdict(false, 'invalidConfirmation');
@@ -120,8 +120,8 @@ class LicenseGate
 
     /**
      * The reason as a sentence. Through Contao's translator where there is
-     * one: on the console TL_LANG is not loaded (seen on c5, LZ-6 — the
-     * refusal read "licence check: revoked"), and the translator loads it.
+     * one: on the console TL_LANG is not loaded (LZ-6 — the refusal read
+     * "licence check: revoked"), and the translator loads it.
      */
     private function sentence(string $reason): string
     {

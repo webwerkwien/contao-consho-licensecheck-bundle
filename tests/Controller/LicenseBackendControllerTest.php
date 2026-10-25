@@ -28,13 +28,12 @@ use Webwerkwien\ContaoConshoLicensecheckBundle\Tests\Fixtures\Shop;
 use Webwerkwien\ContaoConshoLicensecheckBundle\Tests\Schema;
 
 /**
- * „System → Lizenzen" (4.5), nachgetragen nach dem Review (LZ-7): Die Seite
- * selbst wurde von keinem Test aufgerufen. Nur Administratoren; POST nur mit
- * dem eigenen FORM_SUBMIT; ein falscher Schlüssel wird nicht gespeichert und
- * auf Deutsch abgelehnt.
+ * "System → Lizenzen" (4.5, LZ-7): the page itself, which no test called
+ * before. Administrators only; POST only with its own FORM_SUBMIT; a wrong key
+ * is not stored and is refused in German.
  *
- * Nicht geprüft: was Contao auf ROLE_ADMIN antwortet und das Request-Token —
- * beides im echten Backend auf c5.
+ * Not checked here: what Contao answers to ROLE_ADMIN, and the request token —
+ * both need a real back end.
  */
 class LicenseBackendControllerTest extends TestCase
 {

@@ -17,7 +17,7 @@ $GLOBALS['TL_LANG']['CONSHO_LICENSECHECK']['reason'] = [
 ];
 
 // "System → Lizenzen". array_replace, not +=: Contao loads the English file
-// first as fallback, and += would keep its sentences (seen on c5, LZ-6).
+// first as fallback, and += would keep its sentences (LZ-6).
 $GLOBALS['TL_LANG']['CONSHO_LICENSECHECK'] = array_replace($GLOBALS['TL_LANG']['CONSHO_LICENSECHECK'] ?? [], [
     'none' => 'Hier ist keine bezahlte Erweiterung installiert, die eine Lizenz braucht.',
     'colProduct' => 'Erweiterung',
