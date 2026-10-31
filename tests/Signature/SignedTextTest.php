@@ -32,6 +32,18 @@ class SignedTextTest extends TestCase
     }
 
     /**
+     * A line break copied along with the shop's public key must not void
+     * every licence. base64_decode() skips whitespace even in strict mode;
+     * this holds it to that.
+     */
+    public function testLeerraumAmKonfiguriertenSchluesselSchadetNicht(): void
+    {
+        $text = self::$first->sign('CONSHOC1', ['v' => 1, 'x' => 'y']);
+
+        self::assertSame('y', SignedText::read('CONSHOC1', $text, [self::$first->kid => ' '.base64_encode(self::$first->public)."\n"])['x'] ?? null);
+    }
+
+    /**
      * @return iterable<string, array{0: callable(): string}>
      */
     public static function kaputt(): iterable
