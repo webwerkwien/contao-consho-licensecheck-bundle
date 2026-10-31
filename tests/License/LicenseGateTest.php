@@ -4,6 +4,7 @@ namespace Webwerkwien\ContaoConshoLicensecheckBundle\Tests\License;
 
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Webwerkwien\ContaoConshoLicensecheckBundle\License\LicenseGate;
 use Webwerkwien\ContaoConshoLicensecheckBundle\License\LicenseKeys;
 use Webwerkwien\ContaoConshoLicensecheckBundle\Product\Products;
@@ -57,6 +58,45 @@ class LicenseGateTest extends TestCase
     public function testInDevAllesFrei(): void
     {
         self::assertSame([true, 'dev'], [$this->gate('dev')->verdict('acme-tool', self::NOW)->allowed, $this->gate('dev')->verdict('acme-tool', self::NOW)->reason]);
+    }
+
+    /**
+     * Only exactly `dev` opens — the environment a production server never
+     * runs in. Anything else is checked as in production.
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('notDev')]
+    public function testAusserhalbVonDevWirdGeprueft(string $environment): void
+    {
+        $verdict = $this->gate($environment)->verdict('acme-tool', self::NOW);
+
+        self::assertSame([false, 'noKey'], [$verdict->allowed, $verdict->reason]);
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function notDev(): iterable
+    {
+        yield 'prod' => ['prod'];
+        yield 'test' => ['test'];
+        yield 'empty' => [''];
+        yield 'Dev' => ['Dev'];
+        yield 'dev with a space' => ['dev '];
+        yield 'development' => ['development'];
+    }
+
+    /**
+     * The environment comes from the kernel, not from a variable of the
+     * bundle's own that a server could set to `dev` on its own.
+     */
+    public function testDieUmgebungKommtVomKernel(): void
+    {
+        $parameter = new \ReflectionParameter([LicenseGate::class, '__construct'], 'environment');
+        $attributes = $parameter->getAttributes(Autowire::class);
+
+        self::assertCount(1, $attributes);
+        self::assertSame('%kernel.environment%', $attributes[0]->newInstance()->value);
+        self::assertFalse($parameter->isDefaultValueAvailable());
     }
 
     public function testOhneSchluesselOderBestaetigung(): void
